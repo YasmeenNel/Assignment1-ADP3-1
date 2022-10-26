@@ -62,15 +62,7 @@ public class Receptionist {
         this.createReservation = createReservation;
     }
 
-    @Override
-    public String toString() {
-        return "Receptionist{ " +
-                "receptionistID = " + receptionistID +
-                ", receptionistTime = " + receptionistTime +
-                ", numberOfPeople = " + numberOfPeople +
-                ", createReservation = '" + createReservation + '\'' +
-                '}';
-    }
+
 
     public static class Builder{
         private String receptionistID;
@@ -98,10 +90,10 @@ public class Receptionist {
         }
 
         public Builder copy(Receptionist receptionist){
-            this.receptionistID = receptionistID;
-            this.receptionistTime = receptionistTime;
-            this.numberOfPeople = numberOfPeople;
-            this.createReservation = createReservation;
+            this.receptionistID = receptionist.receptionistID;
+            this.receptionistTime = receptionist.receptionistTime;
+            this.numberOfPeople = receptionist.receptionistTime;
+            this.createReservation = receptionist.createReservation;
             return this;
 
         }
@@ -109,5 +101,15 @@ public class Receptionist {
         public Receptionist build(){
             return new Receptionist(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Receptionist{ " +
+                "receptionistID = " + receptionistID +
+                ", receptionistTime = " + receptionistTime +
+                ", numberOfPeople = " + numberOfPeople +
+                ", createReservation = '" + createReservation + '\'' +
+                '}';
     }
 }

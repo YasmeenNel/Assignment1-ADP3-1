@@ -6,6 +6,7 @@ package za.ac.cput.service;
     Date: 14/08/2022
 */
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Delivery;
 import za.ac.cput.domain.Receptionist;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class ReceptionistService implements IReceptionistService{
 
-
+    @Autowired
     private IReceptionistRepository repository;
     private static IReceptionistService service;
 

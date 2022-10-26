@@ -35,8 +35,6 @@ public class DeliveryService implements IDeliveryService{
 
         }
 
-
-
     public Delivery read(String deliveryId) {
         return this.repository.findById(deliveryId).orElse(null);
     }
