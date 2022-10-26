@@ -6,6 +6,8 @@ package za.ac.cput.domain;
     Date: 27/03/2022
  */
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +19,7 @@ import static javax.persistence.GenerationType.TABLE;
 public class Delivery {
 
     @Id
+    @JsonProperty("deliveryID")
     private String deliveryID;
     private String deliveryMethod ,deliveryAddress ,deliveryTime;
 

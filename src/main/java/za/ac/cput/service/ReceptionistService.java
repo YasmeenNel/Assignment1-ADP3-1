@@ -6,22 +6,22 @@ package za.ac.cput.service;
     Date: 14/08/2022
 */
 
+import org.springframework.stereotype.Service;
+import za.ac.cput.domain.Delivery;
 import za.ac.cput.domain.Receptionist;
-import za.ac.cput.repository.ReceptionistRepository;
+import za.ac.cput.repository.IReceptionistRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Service
 public class ReceptionistService implements IReceptionistService{
 
 
-    private final ReceptionistRepository repository;
+    private IReceptionistRepository repository;
     private static IReceptionistService service;
 
-
-    private ReceptionistService(){
-        this.repository = ReceptionistRepository.getRepository();
-    }
 
     public static IReceptionistService getService() {
         if (service == null)
@@ -30,22 +30,34 @@ public class ReceptionistService implements IReceptionistService{
 
     }
 
-    public Receptionist save(Receptionist receptionist) {
+    public Receptionist create(Receptionist receptionist) {
         return this.repository.save(receptionist);
     }
 
 
-    public Optional<Receptionist> read(String s) {
-        return this.repository.read(s);
+    public Receptionist read(String receptionistId) {
+        return this.repository.findById(receptionistId)
+                .orElse(null);
     }
 
-    public void delete(Receptionist receptionist) {
-        this.repository.delete(receptionist);
+    public Receptionist update(Receptionist receptionist) {
+
+        if (this.repository.existsById(receptionist.getReceptionistID()))
+            return this.repository.save(receptionist);
+        return receptionist;
+    }
+
+    public boolean delete(String receptionistId) {
+        this.repository.deleteById(receptionistId);
+
+        if(this.repository.existsById(receptionistId)) return false;
+        else return true;
+
     }
 
 
     public List<Receptionist> getAll() {
-        return this.repository.getAll();
+        return this.repository.findAll().stream().collect(Collectors.toList());
     }
 }
 

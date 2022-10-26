@@ -3,10 +3,13 @@ package za.ac.cput.serviceTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import za.ac.cput.domain.Delivery;
 import za.ac.cput.domain.Receptionist;
+import za.ac.cput.factory.DeliveryFactory;
 import za.ac.cput.factory.ReceptionistFactory;
 
+import za.ac.cput.service.DeliveryService;
 import za.ac.cput.service.IReceptionistService;
 import za.ac.cput.service.ReceptionistService;
 
@@ -18,58 +21,50 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReceptionistServiceTest {
 
-    private Receptionist receptionistRepository;
-    private IReceptionistService service;
+    @Autowired
+    private ReceptionistService service;
+    private final Receptionist receptionist =  ReceptionistFactory.createReceptionist("01",
+            "13:00",
+            "01",
+            "Table for 1 at 13:00");
 
-
-    @BeforeEach
-    void setUp(){
-        this.receptionistRepository =  ReceptionistFactory.createReceptionist("01",
-                "13:00",
-                "01",
-                "Table for 1 at 13:00");
-
-        this.service = ReceptionistService.getService();
-    }
-
-    @AfterEach
-    void tearDown(){
-        this.service.delete(this.receptionistRepository);
+    @Test
+    void a_create() {
+        Receptionist created = this.service.create(receptionist);
+        assertEquals(created.getReceptionistID(), receptionist.getReceptionistID());
+        System.out.println("created" + created);
 
     }
     @Test
-    public void save() {
-        Receptionist saved = this.service.save(this.receptionistRepository);
-        assertNotNull(saved);
-        assertSame(this.receptionistRepository, saved);
+    void b_read() {
+        Receptionist read = service.read(receptionist.getReceptionistID());
+        assertNotNull(read);
+        System.out.println("read:" + read);
+    }
+
+    @Test
+    void c_update() {
+        Receptionist old = service.read("01");
+        Receptionist updated = new Receptionist.Builder().copy(old)
+                .setReceptionistTime("15:00")
+                .build();
+        assertNotNull(service.update(updated));
+        System.out.println("Updated Time " + "" + updated);
 
     }
 
     @Test
-    public void delete() {
-
-        List<Receptionist> receptionistList = this.service.getAll();
-        assertEquals(1, receptionistList.size());
-        this.service.delete(this.receptionistRepository);
-        receptionistList = this.service.getAll();
-        assertEquals(0, receptionistList.size());
+    void e_delete() {
+        boolean done = service.delete("01");
+        assertTrue(done);
+        System.out.println("successfully deleted " + "" + done);
     }
+
 
     @Test
-    public void read() {
-        Receptionist saved = this.service.save(this.receptionistRepository);
-        Optional<Receptionist> read = this.service.read(saved.getReceptionistID());
-        assertAll(
-
-                () -> assertTrue(read.isPresent()),
-                () -> assertSame(saved, read.get())
-        );
+    void findAll(){
+        System.out.println("Display all");
+        System.out.println(service.getAll());
     }
 
-    @Test
-    public void findAll(){
-        this.service.save(this.receptionistRepository);
-        List<Receptionist> receptionistList = this.service.getAll();
-        assertEquals(1, receptionistList.size());
-    }
 }

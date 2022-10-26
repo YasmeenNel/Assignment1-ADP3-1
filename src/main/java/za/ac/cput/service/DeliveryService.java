@@ -6,21 +6,22 @@ package za.ac.cput.service;
     Date: 14/08/2022
 */
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Delivery;
-import za.ac.cput.repository.DeliveryRepository;
+import za.ac.cput.repository.IDeliveryRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Service
 public class DeliveryService implements IDeliveryService{
 
-    private final DeliveryRepository repository;
+    @Autowired
+    private IDeliveryRepository repository;
     private static IDeliveryService service;
 
-
-    private DeliveryService(){
-        this.repository = DeliveryRepository.getRepository();
-    }
 
     public static IDeliveryService getService() {
         if (service == null)
@@ -29,21 +30,32 @@ public class DeliveryService implements IDeliveryService{
 
     }
 
-    public Delivery save(Delivery delivery) {
+    public Delivery create(Delivery delivery) {
        return this.repository.save(delivery);
+
         }
 
 
-    public Optional<Delivery> read(String s) {
-        return this.repository.read(s);
+
+    public Delivery read(String deliveryId) {
+        return this.repository.findById(deliveryId).orElse(null);
     }
 
-    public void delete(Delivery delivery) {
-        this.repository.delete(delivery);
+    public Delivery update(Delivery delivery) {
+        if (this.repository.existsById(delivery.getDeliveryID()))
+            return this.repository.save(delivery);
+        return delivery;
+    }
+
+    public boolean delete(String deliveryId) {
+        this.repository.deleteById(deliveryId);
+
+        if(this.repository.existsById(deliveryId)) return false;
+        else return true;
     }
 
 
     public List<Delivery> getAll() {
-        return this.repository.getAll();
+        return this.repository.findAll().stream().collect(Collectors.toList());
     }
 }
